@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost/vk-internship
     username: postgres
-    password: ruslan5099
+    password: postgres
     driver-class-name: org.postgresql.Driver
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
