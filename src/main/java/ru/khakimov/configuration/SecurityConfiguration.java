@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import ru.khakimov.exception.AuthExceptionHandler;
 import ru.khakimov.repository.UserRepository;
 import ru.khakimov.service.UserDetailsServiceImpl;
 
@@ -40,6 +41,9 @@ public class SecurityConfiguration {
                         .requestMatchers("api/posts/**", "api/albums/**", "api/users/**").authenticated())
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
                 .httpBasic(withDefaults())
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling.authenticationEntryPoint(new AuthExceptionHandler())
+                )
                 .build();
     }
 

@@ -1,22 +1,30 @@
 package ru.khakimov.exception;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.khakimov.dto.response.ApiErrorResponse;
 
-import java.io.IOException;
-
 @RestControllerAdvice
-public class ExceptionHandlerAdvice implements AuthenticationEntryPoint {
+public class ExceptionHandlerAdvice {
+    @ExceptionHandler(AuthenticationException.class)
+
+    public ResponseEntity<ApiErrorResponse> didntAuth(AuthenticationException ex) {
+        HttpStatus badRequest = HttpStatus.UNAUTHORIZED;
+        return ResponseEntity
+                .status(badRequest)
+                .body(
+                        ApiErrorResponse.buildResponse(
+                                "Unauthorized",
+                                badRequest.toString(),
+                                ex
+                        )
+                );
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> invalidArgumentHandle(MethodArgumentNotValidException ex) {
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;
@@ -32,7 +40,7 @@ public class ExceptionHandlerAdvice implements AuthenticationEntryPoint {
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<ApiErrorResponse> chatAlreadyExists(UserAlreadyExistsException ex) {
+    public ResponseEntity<ApiErrorResponse> userAlreadyExists(UserAlreadyExistsException ex) {
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;
         return ResponseEntity
                 .status(badRequest)
@@ -45,8 +53,4 @@ public class ExceptionHandlerAdvice implements AuthenticationEntryPoint {
                 );
     }
 
-    @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-
-    }
 }
